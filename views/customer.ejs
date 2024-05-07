@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/styles.css"> <!-- Your custom CSS file -->
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-yMl26c6sqVfklk5fDjsMxW2c4oe9jpHtpD5UyUfQHtCTJzMn4bxgwFOnX0fGMQSn6PWsJibQVj/horGd3m7B7w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* Additional styles for customer page */
+
+        /* Container for customer details */
+        #customer-details-container {
+            height: 100vh; /* Full height of the viewport */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Styles for the centered customer details */
+        #customer-details {
+            background-color: rgba(0,0,0,0.7); /* Dark brown background color */
+            padding: 20px;
+            border-radius: 10px;
+            color: #ffffff; /* White text color */
+            min-width: 750px;
+            max-width: 750px; /* Limit width for better readability */
+        }
+
+        /* Styles for purchase history and money balance */
+        .fieldset-container {
+            margin-bottom: 20px; /* Add margin between fieldsets */
+            border: none; /* White outline */
+            border-radius: 10px; /* Rounded corners */
+            padding: 10px; /* Add some padding */
+        }
+
+        /* Styles for buttons */
+        .btn-cart {
+            margin-top: 10px; /* Add margin to the top of buttons */
+        }
+        .customer-title {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center; /* Center horizontally */
+}
+    </style>
+</head>
+<body>
+   <%- include('partials/navbar') %>
+    <h1 class="customer-title">Welcome, <%= user.username %>!</h1>
+
+    <div id="customer-details-container">
+        <div id="customer-details">
+            <fieldset class="fieldset-container">
+                <legend>Purchase History</legend>
+                <% if (user.purchases && user.purchases.length > 0) { %>
+                    <ul>
+                        <% user.purchases.forEach(purchase => { %>
+                            <li>
+                                <% if (purchase.product && purchase.product.name) { %>
+                                    <%= purchase.product.name %> - Amount: <%= purchase.amount %>
+                                <% } else { %>
+                                    Unknown Product - Amount: <%= purchase.amount %>
+                                <% } %>
+                            </li>
+                        <% }); %>
+                    </ul>
+                <% } else { %>
+                    <p>No purchase history found.</p>
+                <% } %>
+            </fieldset>
+
+            <fieldset class="fieldset-container">
+                <legend>Current Money Balance</legend>
+                <p>$<%= user.money ? user.money.toFixed(2) : '0.00' %></p>
+                <button id="addMoneyBtn" class="btn btn-primary btn-cart">Add $100</button>
+            </fieldset>
+        </div>
+    </div>
+
+    <a href="/cart" class="btn btn-secondary btn-cart">Go to Cart</a>
+    <a href="/logout" class="btn btn-secondary btn-cart">Logout</a>
+
+    <script>
+        const addMoneyBtn = document.getElementById('addMoneyBtn');
+addMoneyBtn.addEventListener('click', function() {
+    // Call your backend API to add $100 to the user's money balance
+    fetch('/addMoney', {
+        method: 'POST',
+        body: JSON.stringify({ userId: '<%= user._id %>', amount: 100 }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(response => {
+        if (response.ok) {
+            // Reload the page or update the UI to reflect the new balance
+            location.reload();
+        } else {
+            console.error('Failed to add money:', response.statusText);
+        }
+    }).catch(error => {
+        console.error('Error adding money:', error);
+    });
+});
+
+    </script>
+    
+    <!-- Bootstrap JS (Optional, for Bootstrap features like modals, dropdowns, etc.) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/8bee117368.js" crossorigin="anonymous"></script>
+</body>
+</html>

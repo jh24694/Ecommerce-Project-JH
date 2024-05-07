@@ -1,0 +1,159 @@
+<!-- shop.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Shop</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-yMl26c6sqVfklk5fDjsMxW2c4oe9jpHtpD5UyUfQHtCTJzMn4bxgwFOnX0fGMQSn6PWsJibQVj/horGd3m7B7w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Link to your custom styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+   <%- include('partials/navbar') %>
+    <div class="container">
+        <% if (messages && messages.success) { %>
+            <div class="alert alert-success" role="alert">
+                <%= messages.success %>
+            </div>
+        <% } %>
+
+        <h1 class="mt-5">Products</h1>
+
+        <!-- Sort buttons -->
+        <div class="sort-buttons">
+            <button id="sortByPrice" class="btn btn-primary mr-2">
+                Sort by Price 
+                <i class="fas fa-sort"></i>
+            </button>
+            <button id="sortByName" class="btn btn-primary">
+                Sort by Name 
+                <i class="fas fa-sort"></i>
+            </button>
+        </div>
+
+        <!-- Search input field -->
+        <input type="text" id="searchInput" class="form-control mt-3" placeholder="Search for a product...">
+
+        <!-- Products container -->
+        <div class="row" id="productContainer">
+            <% products.forEach(function(product) { %>
+                <div class="col-md-4 product-card">
+                    <div class="card">
+                        <!-- Update the src attribute to use the actual image URL -->
+                        <img src="/images/<%= product.image %>" class="card-img-top" alt="Product Image">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= product.name %></h5>
+                            <!-- Display description -->
+                            <p class="card-text"><%= product.description %></p>
+                            <p class="card-text">Price: $<%= product.price %> | Quantity: <%= product.availableQuantity %></p>
+                            <form class="mt-3" action="/addToCart" method="POST">
+                                <label for="quantity-<%= product.name %>">Quantity:</label>
+                                <input type="number" id="quantity-<%= product.name %>" name="quantity" value="1" max="<%= product.availableQuantity %>">
+                                <input type="hidden" name="productName" value="<%= product.name %>">
+                                <button type="submit">Add to Cart</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (Optional, for Bootstrap features like modals, dropdowns, etc.) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Sorting and filtering script -->
+    <script>
+        // Get the product container, search input field, and sort buttons
+        const productContainer = document.getElementById('productContainer');
+        const searchInput = document.getElementById('searchInput');
+        const sortByPriceButton = document.getElementById('sortByPrice');
+        const sortByNameButton = document.getElementById('sortByName');
+
+        let sortByPriceAsc = true; // Track sorting state for price
+        let sortByNameAsc = true; // Track sorting state for name
+
+        // Function to filter products based on search input
+        function filterProducts() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const productCards = productContainer.getElementsByClassName('product-card');
+
+            // Loop through each product card
+            Array.from(productCards).forEach(function(card) {
+                const productName = card.querySelector('.card-title').innerText.toLowerCase();
+
+                // If the product name contains the search term, display the card; otherwise, hide it
+                if (productName.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Add event listener to the search input field
+        searchInput.addEventListener('input', filterProducts);
+
+        // Function to sort products by price
+        function sortByPrice() {
+            // Retrieve all product cards
+            const productCards = Array.from(productContainer.getElementsByClassName('product-card'));
+
+            // Sort product cards based on the data-price attribute
+            productCards.sort(function(a, b) {
+                const priceA = parseFloat(a.querySelector('.card-text').innerText.match(/\d+(\.\d+)?/)[0]);
+                const priceB = parseFloat(b.querySelector('.card-text').innerText.match(/\d+(\.\d+)?/)[0]);
+                return sortByPriceAsc ? priceA - priceB : priceB - priceA; // Toggle sorting direction
+            });
+
+            // Reorder product cards in the container
+            productCards.forEach(function(card) {
+                productContainer.appendChild(card);
+            });
+
+            // Toggle sorting direction for next click
+            sortByPriceAsc = !sortByPriceAsc;
+        }
+
+        // Add event listener to the Sort by Price button
+        sortByPriceButton.addEventListener('click', function() {
+            sortByPrice();
+        });
+
+        // Function to sort products by name
+        function sortByName() {
+            // Retrieve all product cards
+            const productCards = Array.from(productContainer.getElementsByClassName('product-card'));
+
+            // Sort product cards based on the card title
+            productCards.sort(function(a, b) {
+                const nameA = a.querySelector('.card-title').innerText.toLowerCase();
+                const nameB = b.querySelector('.card-title').innerText.toLowerCase();
+                return sortByNameAsc ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA); // Toggle sorting direction
+            });
+
+            // Reorder product cards in the container
+            productCards.forEach(function(card) {
+                productContainer.appendChild(card);
+            });
+
+            // Toggle sorting direction for next click
+            sortByNameAsc = !sortByNameAsc;
+        }
+
+        // Add event listener to the Sort by Name button
+        sortByNameButton.addEventListener('click', function() {
+            sortByName();
+        });
+    </script>
+    
+    <script src="https://kit.fontawesome.com/8bee117368.js" crossorigin="anonymous"></script>
+</body>
+</html>

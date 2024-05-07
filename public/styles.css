@@ -1,0 +1,111 @@
+/* styles.css */
+
+/* Body styles */
+body {
+    font-family: 'Times New Roman', sans-serif; /* Use a gothic-style font */
+    color: #ffffff; /* White text color */
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/images/library.jpg');
+    background-size: 100% auto;
+}
+
+/* Navbar styles */
+.navbar {
+    background-color: #2d2d2d; /* Dark navbar background color */
+}
+
+.navbar-brand,
+.navbar-nav .nav-link {
+    color: #ffffff; /* White navbar text color */
+}
+
+/* Container styles */
+.container {
+    
+    
+    
+}
+
+/* Card styles */
+.card {
+    background-color: #292929; /* Dark card background color */
+    color: #ffffff; /* White text color */
+}
+
+.card-title {
+    color: #b88f4e; /* Gold card title color */
+}
+
+/* Button styles */
+.btn {
+    background-color: #b88f4e; /* Gold button background color */
+    border-color: #b88f4e; /* Gold button border color */
+    color: #ffffff; /* White button text color */
+}
+
+.btn:hover {
+    background-color: #a37642; /* Darker gold hover color */
+    border-color: #a37642; /* Darker gold hover border color */
+}
+
+/* styles.css */
+
+/* Add hover effect to product cards */
+.product-card {
+    transition: transform 0.3s ease-in-out; /* Smooth transition for transform property */
+    padding: 20px;
+}
+
+/* Apply transform on hover */
+.product-card:hover {
+    animation: sway 3s infinite alternate; /* Apply the sway animation on hover */
+}
+
+/* Define the sway animation */
+@keyframes sway {
+    0% {
+        transform: translateX(-5px); /* Initial position, slightly to the left */
+    }
+    50% {
+        transform: translateX(5px); /* Sway to the right */
+    }
+    100% {
+        transform: translateX(-5px); /* Return to the initial position, slightly to the left */
+    }
+}
+
+/* Add hover effect to product card title */
+.card-title {
+    transition: transform 3s ease-in-out; /* Smooth transition for transform property */
+}
+
+/* Apply transform on hover */
+.card-title:hover {
+    animation: sway 1s infinite repeat; /* Apply the sway animation on hover */
+}
+
+/* Additional styles for cart page */
+
+/* Container for cart details */
+#cart-container {
+    height: 100vh; /* Full height of the viewport */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Styles for the centered cart details */
+#cart-details {
+    background-color: rgba(0, 0, 0, 0.7); /* Dark background color with opacity */
+    padding: 20px;
+    border-radius: 10px;
+    color: #ffffff; /* White text color */
+}
+
+/* Styles for cart buttons */
+.btn-cart {
+    margin: 10px; /* Add margin to buttons */
+    padding: 10px 20px; /* Add padding to buttons */
+}
+.table{
+    color:white;
+}
